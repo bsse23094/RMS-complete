@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Skime Restaurant Management System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        .login-container {
+            max-width: 450px;
+            margin: 100px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-header h2 {
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .login-form .form-control {
+            height: 50px;
+            border-radius: 5px;
+            box-shadow: none;
+            margin-bottom: 20px;
+            padding-left: 15px;
+        }
+        
+        .login-form .form-control:focus {
+            border-color: #000;
+            box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.1);
+        }
+        
+        .login-btn {
+            height: 50px;
+            background-color: #000;
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            border-radius: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .login-btn:hover {
+            background-color: #333;
+            transform: translateY(-3px);
+        }
+        
+        .login-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .login-footer a {
+            color: #000;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .alert {
+            display: none;
+            margin-bottom: 20px;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85rem;
+            margin-top: -15px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .is-invalid {
+            border-color: #dc3545 !important;
+        }
+        
+        .is-valid {
+            border-color: #28a745 !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-utensils me-2"></i>Skime
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="menu.html">
+                            <i class="fas fa-book-open me-1"></i>Menu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="list.html">
+                            <i class="fas fa-list me-1"></i>Reservations & Orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="add.html">
+                            <i class="fas fa-calendar-plus me-1"></i>Book a Table
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">
+                            <i class="fas fa-envelope me-1"></i>Contact
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-shopping-cart me-1"></i>Order Now
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="login.html">
+                            <i class="fas fa-sign-in-alt me-1"></i>Login
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <div class="container">
+        <div class="login-container">
+            <div class="login-header">
+                <h2><i class="fas fa-sign-in-alt me-2"></i>Login</h2>
+                <p>Welcome back! Please login to your account.</p>
+            </div>
+            
+            <div class="alert alert-danger" id="loginError" role="alert">
+                Invalid email or password. Please try again.
+            </div>
+            
+            <div class="alert alert-success" id="loginSuccess" role="alert">
+                Login successful! Redirecting to dashboard...
+            </div>
+            
+            <form class="login-form" id="loginForm">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                    <div class="error-message" id="emailError">Please enter a valid email address</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                    <div class="error-message" id="passwordError">Please enter your password</div>
+                </div>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                    <label class="form-check-label" for="rememberMe">Remember me</label>
+                </div>
+                
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+            
+            <div class="login-footer">
+                <p>Don't have an account? <a href="register.html">Register Now</a></p>
+                <p><a href="#">Forgot Password?</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const loginError = document.getElementById('loginError');
+            const loginSuccess = document.getElementById('loginSuccess');
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
+            
+            // Check if there's a remembered email
+            const rememberedEmail = localStorage.getItem('rememberedEmail');
+            if (rememberedEmail) {
+                document.getElementById('email').value = rememberedEmail;
+                document.getElementById('rememberMe').checked = true;
+            }
+            
+            // Form submission
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Reset error messages
+                loginError.style.display = 'none';
+                loginSuccess.style.display = 'none';
+                emailError.style.display = 'none';
+                passwordError.style.display = 'none';
+                
+                // Get form values
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+                const rememberMe = document.getElementById('rememberMe').checked;
+                
+                // Validate form fields
+                let isValid = true;
+                
+                // Validate email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    document.getElementById('email').classList.add('is-invalid');
+                    emailError.style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('email').classList.remove('is-invalid');
+                }
+                
+                // Validate password
+                if (password === '') {
+                    document.getElementById('password').classList.add('is-invalid');
+                    passwordError.style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('password').classList.remove('is-invalid');
+                }
+                
+                if (!isValid) {
+                    loginError.style.display = 'block';
+                    return;
+                }
+                
+                // Check user credentials against localStorage
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                const user = users.find(u => u.email === email && u.password === password);
+                
+                if (user) {
+                    // Handle "Remember me" functionality
+                    if (rememberMe) {
+                        localStorage.setItem('rememberedEmail', email);
+                    } else {
+                        localStorage.removeItem('rememberedEmail');
+                    }
+                    
+                    // Store current user in session
+                    sessionStorage.setItem('currentUser', JSON.stringify(user));
+                    
+                    // Show success message
+                    loginSuccess.style.display = 'block';
+                    
+                    // Redirect to dashboard after 1.5 seconds
+                    setTimeout(() => {
+                        window.location.href = 'index.html'; // Change to your dashboard page
+                    }, 1500);
+                } else {
+                    loginError.style.display = 'block';
+                    document.getElementById('email').classList.add('is-invalid');
+                    document.getElementById('password').classList.add('is-invalid');
+                }
+            });
+            
+            // Real-time validation for fields
+            document.getElementById('email').addEventListener('input', function() {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (emailRegex.test(this.value.trim())) {
+                    this.classList.remove('is-invalid');
+                    emailError.style.display = 'none';
+                }
+            });
+            
+            document.getElementById('password').addEventListener('input', function() {
+                if (this.value.trim() !== '') {
+                    this.classList.remove('is-invalid');
+                    passwordError.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

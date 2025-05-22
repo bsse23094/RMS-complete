@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Menu | TASTE Restaurant</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    
+    <style>
+        .menu-header {
+            background-color: #f8f9fa;
+            padding: 3rem 0;
+            border-radius: 10px;
+            margin-bottom: 3rem;
+        }
+        
+        .menu-title {
+            font-size: 3rem;
+            font-weight: 800;
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        .menu-title::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -15px;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: #000;
+        }
+        
+        .menu-categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+            gap: 10px;
+        }
+        
+        .category-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .category-btn:hover, .category-btn.active {
+            background-color: #000;
+            color: #fff;
+            border-color: #000;
+        }
+        
+        .menu-section {
+            margin-bottom: 4rem;
+        }
+        
+        .section-title {
+            position: relative;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 60px;
+            height: 3px;
+            background-color: #000;
+        }
+        
+        .menu-item {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+            margin-bottom: 30px;
+        }
+        
+        .menu-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .menu-item-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .menu-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .menu-item:hover .menu-item-image img {
+            transform: scale(1.1);
+        }
+        
+        .menu-badge {
+            position: absolute;
+            top: 15px;
+            right: -35px;
+            background: #e74c3c;
+            color: #fff;
+            font-size: 0.8rem;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-weight: 600;
+        }
+        
+        .menu-badge.popular {
+            background-color: #e74c3c;
+        }
+        
+        .menu-badge.new {
+            background-color: #2ecc71;
+        }
+        
+        .menu-badge.spicy {
+            background-color: #f39c12;
+        }
+        
+        .menu-item-content {
+            padding: 1.5rem;
+        }
+        
+        .menu-item-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .menu-item-desc {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .menu-item-price {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 0;
+            margin-left: 0;
+            color: #000;
+        }
+        
+        .menu-item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .menu-item-action {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #000;
+    color: #fff;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    margin-left: auto; /* This pushes the button to the right */
+}
+
+
+        .dietary-info {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .dietary-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: #f1f1f1;
+            font-size: 0.7rem;
+            color: #666;
+        }
+        
+        .dietary-icon.vegetarian {
+            background-color: #2ecc71;
+            color: #fff;
+        }
+        
+        .dietary-icon.vegan {
+            background-color: #27ae60;
+            color: #fff;
+        }
+        
+        .dietary-icon.gluten-free {
+            background-color: #f39c12;
+            color: #fff;
+        }
+        
+        .menu-item-action {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: #000;
+            color: #fff;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-item-action:hover {
+            background-color: #333;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        
+        .menu-container {
+            padding: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-utensils me-2"></i>Skime
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="menu.html">
+                            <i class="fas fa-book-open me-1"></i>Menu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="list.html">
+                            <i class="fas fa-list me-1"></i>Reservations & Orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="add.html">
+                            <i class="fas fa-calendar-plus me-1"></i>Book a Table
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">
+                            <i class="fas fa-envelope me-1"></i>Contact
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="list.html">
+                            <i class="fas fa-shopping-cart me-1"></i>
+                            Cart <span id="cart-count" class="badge bg-danger">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">
+                            <i class="fas fa-sign-in-alt me-1"></i>Login
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="menu-header text-center">
+        <div class="container">
+            <h1 class="menu-title">Our Menu</h1>
+            <p class="lead text-muted">Discover our delicious selection of dishes</p>
+            
+            <div class="menu-categories">
+                <button class="category-btn active" data-category="all">All</button>
+                <button class="category-btn" data-category="appetizers">Starters</button>
+                <button class="category-btn" data-category="main-courses">Main Course</button>
+                <button class="category-btn" data-category="desserts">Desserts</button>
+                <button class="category-btn" data-category="beverages">Drinks</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="menu-container">
+        <div class="container">
+            <!-- Appetizers Section -->
+            <div class="menu-section" id="appetizers">
+                <h2 class="section-title">Appetizers</h2>
+                <div class="row"></div>
+            </div>
+            
+            <!-- Main Courses Section -->
+            <div class="menu-section" id="main-courses">
+                <h2 class="section-title">Main Courses</h2>
+                <div class="row"></div>
+            </div>
+            
+            <!-- Desserts Section -->
+            <div class="menu-section" id="desserts">
+                <h2 class="section-title">Desserts</h2>
+                <div class="row"></div>
+            </div>
+            
+            <!-- Beverages Section -->
+            <div class="menu-section" id="beverages">
+                <h2 class="section-title">Beverages</h2>
+                <div class="row"></div>
+            </div>
+            
+            <!-- Call to Action -->
+            <div class="text-center mt-5 mb-5">
+                <p class="lead">Ready to experience our delicious cuisine?</p>
+                <a href="add.html" class="btn btn-dark btn-lg">
+                    <i class="fas fa-calendar-plus me-2"></i>Reserve a Table
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!--         Call to Action -->
+            <div class="text-center mt-5 mb-5">
+                <p class="lead">Ready to experience our delicious cuisine?</p>
+                <a href="add.html" class="btn btn-dark btn-lg">
+                    <i class="fas fa-calendar-plus me-2"></i>Reserve a Table
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Skime Restaurant</h5>
+                    <p>A comprehensive system for restaurant reservation and table management.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-light">Home</a></li>
+                        <li><a href="menu.html" class="text-light">Menu</a></li>
+                        <li><a href="list.html" class="text-light">View Reservations & Orders</a></li>
+                        <li><a href="add.html" class="text-light">Book a Table</a></li>
+                        <li><a href="contact.html" class="text-light">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact</h5>
+                    <address>
+                        <p><i class="fas fa-map-marker-alt me-2"></i>123 Restaurant St, City</p>
+                        <p><i class="fas fa-phone me-2"></i>(123) 456-7890</p>
+                        <p><i class="fas fa-envelope me-2"></i>info@skime-restaurant.com</p>
+                    </address>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col text-center">
+                    <p class="mb-0">© 2025 Skime Restaurant Management System. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Storage Management System -->
+    <script src="js/storage.js"></script>
+   
+    
+    <!-- Application Scripts -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    updateCartCount();
+    // Menu Data - Single Source of Truth
+    const menuItems = [
+        {
+            id: 1,
+            category: 'appetizers',
+            name: 'Classic Bruschetta',
+            description: 'Toasted baguette slices topped with fresh tomatoes, basil, garlic, and extra virgin olive oil.',
+            price: 350,
+            image: 'images/classic.jpeg',
+            badges: ['popular'],
+            dietary: ['vegetarian']
+        },
+        {
+            id: 2,
+            category: 'appetizers',
+            name: 'Crispy Calamari',
+            description: 'Tender calamari rings lightly coated in seasoned flour and fried to perfection. Served with garlic aioli.',
+            price: 550,
+            image: 'images/calamari.jpeg',
+            badges: [],
+            dietary: []
+        },
+        {
+            id: 3,
+            category: 'appetizers',
+            name: 'Stuffed Mushrooms',
+            description: 'Button mushrooms filled with cream cheese, herbs, and topped with breadcrumbs, baked until golden.',
+            price: 450,
+            image: 'images/mushrooms.jpeg',
+            badges: ['new'],
+            dietary: ['vegetarian']
+        },
+        {
+            id: 4,
+            category: 'main-courses',
+            name: 'Grilled Salmon',
+            description: 'Fresh Atlantic salmon fillet grilled to perfection, served with lemon butter sauce and roasted vegetables.',
+            price: 1200,
+            image: 'images/salmon.jpeg',
+            badges: ['popular'],
+            dietary: ['gluten-free']
+        },
+        {
+            id: 5,
+            category: 'main-courses',
+            name: 'Ribeye Steak',
+            description: 'Prime cut ribeye steak grilled to your preference, accompanied by mashed potatoes and grilled asparagus.',
+            price: 1500,
+            image: 'images/ribeye.jpg',
+            badges: [],
+            dietary: ['gluten-free']
+        },
+        {
+            id: 6,
+            category: 'main-courses',
+            name: 'Pasta Primavera',
+            description: 'Fettuccine pasta tossed with seasonal vegetables in a light cream sauce with Parmesan cheese.',
+            price: 850,
+            image: 'images/pasta.jpg',
+            badges: ['vegetarian'],
+            dietary: ['vegetarian']
+        },
+        {
+            id: 7,
+            category: 'desserts',
+            name: 'Chocolate Lava Cake',
+            description: 'Warm chocolate cake with a molten center, served with vanilla ice cream and fresh berries.',
+            price: 450,
+            image: 'images/cake.jpg',
+            badges: ['popular'],
+            dietary: ['vegetarian']
+        },
+        {
+            id: 8,
+            category: 'desserts',
+            name: 'Classic Tiramisu',
+            description: 'Layers of coffee-soaked ladyfingers and mascarpone cream, dusted with cocoa powder.',
+            price: 400,
+            image: 'images/tiramisu.jpeg',
+            badges: [],
+            dietary: ['vegetarian']
+        },
+        {
+            id: 9,
+            category: 'desserts',
+            name: 'Mango Cheesecake',
+            description: 'Creamy cheesecake with a graham cracker crust, topped with fresh mango puree and slices.',
+            price: 500,
+            image: 'images/mango.jpeg',
+            badges: ['new'],
+            dietary: ['vegetarian']
+        },
+        {
+            id: 10,
+            category: 'beverages',
+            name: 'Fresh Fruit Juice',
+            description: 'Freshly squeezed juice from seasonal fruits. Ask your server for today\'s selections.',
+            price: 250,
+            image: 'images/juice.jpeg',
+            badges: [],
+            dietary: ['vegan', 'gluten-free']
+        },
+        {
+            id: 11,
+            category: 'beverages',
+            name: 'Coffee Selection',
+            description: 'Choose from our premium selection of coffee - Espresso, Cappuccino, Latte, or Macchiato.',
+            price: 300,
+            image: 'images/coffee.jpeg',
+            badges: [],
+            dietary: []
+        }
+    ];
+
+    function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const totalItems = cart.reduce((total, item) => total + (item.quantity || 1), 0);
+    document.getElementById('cart-count').textContent = totalItems;
+}
+
+    // Initialize the menu
+    renderMenuItems();
+
+    // Menu filtering functionality
+    setupCategoryFilters();
+
+    // Cart functions
+    function renderMenuItems() {
+        const sections = {
+            appetizers: document.querySelector('#appetizers .row'),
+            'main-courses': document.querySelector('#main-courses .row'),
+            desserts: document.querySelector('#desserts .row'),
+            beverages: document.querySelector('#beverages .row')
+        };
+
+        // Clear existing items
+        Object.values(sections).forEach(section => {
+            section.innerHTML = '';
+        });
+
+        // Add items from array
+        menuItems.forEach(item => {
+            const section = sections[item.category];
+            if (section) {
+                section.appendChild(createMenuItemElement(item));
+            }
+        });
+
+        // Add event listeners to the new buttons
+        setupAddToCartButtons();
+    }
+
+    function createMenuItemElement(item) {
+        const col = document.createElement('div');
+        col.className = 'col-md-6 col-lg-4';
+        
+        const menuItem = document.createElement('div');
+        menuItem.className = 'menu-item';
+        
+        // Image with badges
+        const imageDiv = document.createElement('div');
+        imageDiv.className = 'menu-item-image';
+        
+        const img = document.createElement('img');
+        img.src = item.image;
+        img.alt = item.name;
+        imageDiv.appendChild(img);
+        
+        // Add badges
+        item.badges.forEach(badge => {
+            const badgeDiv = document.createElement('div');
+            badgeDiv.className = `menu-badge ${badge}`;
+            badgeDiv.textContent = badge.charAt(0).toUpperCase() + badge.slice(1);
+            imageDiv.appendChild(badgeDiv);
+        });
+        
+        // Content
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'menu-item-content';
+        
+        const title = document.createElement('h3');
+        title.className = 'menu-item-title';
+        title.textContent = item.name;
+        
+        const desc = document.createElement('p');
+        desc.className = 'menu-item-desc';
+        desc.textContent = item.description;
+        
+        // Footer with price, dietary info, and add to cart
+        const footerDiv = document.createElement('div');
+        footerDiv.className = 'menu-item-footer';
+        
+        const price = document.createElement('p');
+        price.className = 'menu-item-price';
+        price.textContent = `Rs. ${item.price}`;
+        
+        const dietaryInfo = document.createElement('div');
+        dietaryInfo.className = 'dietary-info';
+        
+        // Add dietary icons
+        item.dietary.forEach(diet => {
+            const icon = document.createElement('span');
+            icon.className = `dietary-icon ${diet}`;
+            icon.title = diet.charAt(0).toUpperCase() + diet.slice(1);
+            
+            const iconElement = document.createElement('i');
+            if (diet === 'vegetarian') {
+                iconElement.className = 'fas fa-leaf';
+            } else if (diet === 'vegan') {
+                iconElement.className = 'fas fa-seedling';
+            } else if (diet === 'gluten-free') {
+                iconElement.className = 'fas fa-wheat-awn-slash';
+            }
+            
+            icon.appendChild(iconElement);
+            dietaryInfo.appendChild(icon);
+        });
+        
+        const addToCartBtn = document.createElement('a');
+        addToCartBtn.href = '#';
+        addToCartBtn.className = 'menu-item-action';
+        addToCartBtn.textContent = 'Add to Cart';
+        addToCartBtn.dataset.itemId = item.id;
+        
+        // Assemble the footer
+        footerDiv.appendChild(price);
+        footerDiv.appendChild(dietaryInfo);
+        footerDiv.appendChild(addToCartBtn);
+        
+        // Assemble the content
+        contentDiv.appendChild(title);
+        contentDiv.appendChild(desc);
+        contentDiv.appendChild(footerDiv);
+        
+        // Assemble the menu item
+        menuItem.appendChild(imageDiv);
+        menuItem.appendChild(contentDiv);
+        
+        // Add to column
+        col.appendChild(menuItem);
+        
+        return col;
+    }
+
+    function setupCategoryFilters() {
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const menuSections = document.querySelectorAll('.menu-section');
+        
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add active class to clicked button
+                button.classList.add('active');
+                
+                const category = button.getAttribute('data-category');
+                
+                // Show all sections if category is 'all', otherwise show only the matching section
+                if (category === 'all') {
+                    menuSections.forEach(section => section.style.display = 'block');
+                } else {
+                    menuSections.forEach(section => {
+                        section.style.display = section.id === category ? 'block' : 'none';
+                    });
+                }
+            });
+        });
+    }
+
+    function setupAddToCartButtons() {
+        document.querySelectorAll('.menu-item-action').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const itemId = parseInt(this.dataset.itemId);
+                const menuItem = menuItems.find(item => item.id === itemId);
+                
+                if (menuItem) {
+                    addToCart(menuItem);
+                    showAlert(`${menuItem.name} added to cart!`, 'success');
+                }
+            });
+        });
+    }
+
+    function addToCart(item) {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        // Check if item already exists in cart
+        const existingItem = cart.find(cartItem => cartItem.id === item.id);
+        
+        if (existingItem) {
+            existingItem.quantity = (existingItem.quantity || 1) + 1;
+        } else {
+            const cartItem = {
+                id: item.id,
+                name: item.name,
+                description: item.description,
+                price: item.price,
+                image: item.image,
+                quantity: 1
+            };
+            cart.push(cartItem);
+        }
+        
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartCount();
+    }
+
+    function showAlert(message, type) {
+        // Create alert element
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} fixed-top w-100 text-center`;
+        alert.style.position = 'fixed';
+        alert.style.top = '20px';
+        alert.style.left = '50%';
+        alert.style.transform = 'translateX(-50%)';
+        alert.style.zIndex = '9999';
+        alert.style.maxWidth = '500px';
+        alert.textContent = message;
+        
+        // Add to body
+        document.body.appendChild(alert);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            alert.remove();
+        }, 3000);
+    }
+});    
+</script>
+
+    <!-- Cart Offcanvas -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">Your Cart</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="list-group mb-3" id="cartItems">
+                <!-- Cart items will be dynamically loaded here -->
+            </ul>
+            <div class="d-flex justify-content-between mb-3">
+                <h6 class="fw-bold">Total:</h6>
+                <h6 class="fw-bold" id="cartTotal">Rs. 0.00</h6>
+            </div>
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary" onclick="window.location.href='checkout.html'">
+                    Proceed to Checkout
+                </button>
+                <button class="btn btn-outline-danger" onclick="clearCart()">
+                    Clear Cart
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add to Cart Toast -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="addToCartToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="fas fa-check-circle text-success me-2"></i>
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Item added to cart successfully!
+            </div>
+        </div>
+    </div>
+</body>
+</html>

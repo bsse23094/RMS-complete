@@ -1,0 +1,2783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Skime Restaurant</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <style>
+        /* Sidebar Styles */
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: #212529;
+            color: #fff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+        
+        .sidebar.collapsed {
+            margin-left: -250px;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            background-color: #000;
+        }
+        
+        .sidebar-menu {
+            padding: 0;
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-menu li a {
+            padding: 15px 20px;
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu li a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-menu li a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .active {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-left: 5px solid #fff;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .main-content.expanded {
+            margin-left: 0;
+        }
+        
+        .dashboard-header {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .toggle-sidebar {
+            background-color: #343a40;
+            color: #fff;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .toggle-sidebar:hover {
+            background-color: #23272b;
+        }
+        
+        .panel {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .panel-header {
+            background-color: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .panel-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .panel-body {
+            padding: 20px;
+        }
+        
+        .stat-card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .bg-primary-light {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: #0d6efd;
+        }
+        
+        .bg-success-light {
+            background-color: rgba(25, 135, 84, 0.1);
+            color: #198754;
+        }
+        
+        .bg-warning-light {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+        
+        .bg-danger-light {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        
+        .stat-card-title {
+            font-size: 14px;
+            color: #6c757d;
+            margin: 0;
+        }
+        
+        .stat-card-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .admin-table {
+            width: 100%;
+        }
+        
+        .admin-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .table-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .action-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .edit-btn {
+            background-color: #0d6efd;
+        }
+        
+        .delete-btn {
+            background-color: #dc3545;
+        }
+        
+        .view-btn {
+            background-color: #6c757d;
+        }
+
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-utensils me-2"></i>Skime Admin</h3>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#dashboard" class="nav-link active" data-tab="dashboard"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+                <li><a href="#menu" class="nav-link" data-tab="menu"><i class="fas fa-utensils"></i>Menu Items</a></li>
+                <li><a href="#reservations" class="nav-link" data-tab="reservations"><i class="fas fa-calendar-alt"></i>Reservations</a></li>
+                <li><a href="#tables" class="nav-link" data-tab="tables"><i class="fas fa-chair"></i>Tables</a></li>
+                <li><a href="#orders" class="nav-link" data-tab="orders"><i class="fas fa-shopping-cart"></i>Orders</a></li>
+                <li><a href="#users" class="nav-link" data-tab="users"><i class="fas fa-users"></i>Users</a></li>
+                <li><a href="#settings" class="nav-link" data-tab="settings"><i class="fas fa-cog"></i>Settings</a></li>
+                <li><a href="index.html"><i class="fas fa-sign-out-alt"></i>Back to Site</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <button class="toggle-sidebar" id="toggleSidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown me-3">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="notificationsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge bg-danger">3</span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="notificationsDropdown">
+                            <li><a class="dropdown-item" href="#">New reservation #123</a></li>
+                            <li><a class="dropdown-item" href="#">New order #456</a></li>
+                            <li><a class="dropdown-item" href="#">Stock alert: Dish 3 is low</a></li>
+                        </ul>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-dark dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-1"></i>Admin
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <div id="dashboardTab" class="tab-content active">
+                <h2 class="mb-4">Dashboard</h2>
+                
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-card-header">
+                                <div>
+                                    <h5 class="stat-card-title">Reservations Today</h5>
+                                    <h2 class="stat-card-value" id="reservationsToday">0</h2>
+                                </div>
+                                <div class="stat-card-icon bg-primary-light">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-card-header">
+                                <div>
+                                    <h5 class="stat-card-title">Orders Today</h5>
+                                    <h2 class="stat-card-value" id="ordersToday">0</h2>
+                                </div>
+                                <div class="stat-card-icon bg-success-light">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-card-header">
+                                <div>
+                                    <h5 class="stat-card-title">Available Tables</h5>
+                                    <h2 class="stat-card-value" id="availableTables">0</h2>
+                                </div>
+                                <div class="stat-card-icon bg-warning-light">
+                                    <i class="fas fa-chair"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-card-header">
+                                <div>
+                                    <h5 class="stat-card-title">Menu Items</h5>
+                                    <h2 class="stat-card-value" id="menuItemsCount">0</h2>
+                                </div>
+                                <div class="stat-card-icon bg-danger-light">
+                                    <i class="fas fa-utensils"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h4 class="panel-title">Recent Reservations</h4>
+                                <a href="#reservations" class="nav-link" data-tab="reservations">View All</a>
+                            </div>
+                            <div class="panel-body">
+                                <table class="table admin-table" id="dashboardReservationsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Table</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Dynamic content will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h4 class="panel-title">Recent Orders</h4>
+                                <a href="#orders" class="nav-link" data-tab="orders">View All</a>
+                            </div>
+                            <div class="panel-body">
+                                <table class="table admin-table" id="dashboardOrdersTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Items</th>
+                                            <th>Total</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Dynamic content will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Remaining tab content will be added later -->
+
+            <!-- Menu Items Tab -->
+            <div id="menuTab" class="tab-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Menu Items Management</h2>
+                    <button class="btn btn-primary" id="addMenuItemBtn">
+                        <i class="fas fa-plus me-2"></i>Add New Item
+                    </button>
+                </div>
+                
+                <div class="panel">
+                    <div class="panel-header">
+                        <h4 class="panel-title">Menu Items</h4>
+                        <div class="d-flex">
+                            <input type="text" id="menuSearchInput" class="form-control form-control-sm me-2" placeholder="Search menu items...">
+                            <select id="menuCategoryFilter" class="form-select form-select-sm me-2">
+                                <option value="">All Categories</option>
+                                <option value="appetizer">Appetizers</option>
+                                <option value="main">Main Course</option>
+                                <option value="dessert">Desserts</option>
+                                <option value="beverage">Beverages</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table admin-table" id="menuItemsTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Image</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Featured</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dynamic content will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Menu Item Form Modal -->
+            <div class="modal fade" id="menuItemModal" tabindex="-1" aria-labelledby="menuItemModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="menuItemModalLabel">Add New Menu Item</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="menuItemForm">
+                                <input type="hidden" id="menuItemId">
+                                
+                                <div class="mb-3">
+                                    <label for="menuItemName" class="form-label">Item Name</label>
+                                    <input type="text" class="form-control" id="menuItemName" required>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="menuItemCategory" class="form-label">Category</label>
+                                        <select class="form-select" id="menuItemCategory" required>
+                                            <option value="">Select Category</option>
+                                            <option value="appetizer">Appetizer</option>
+                                            <option value="main">Main Course</option>
+                                            <option value="dessert">Dessert</option>
+                                            <option value="beverage">Beverage</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="menuItemPrice" class="form-label">Price (Rs.)</label>
+                                        <input type="number" class="form-control" id="menuItemPrice" min="0" step="1" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="menuItemDescription" class="form-label">Description</label>
+                                    <textarea class="form-control" id="menuItemDescription" rows="3" required></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="menuItemImage" class="form-label">Image URL</label>
+                                    <input type="url" class="form-control" id="menuItemImage" placeholder="https://example.com/image.jpg" required>
+                                    <div class="form-text">Enter URL to the image of this menu item</div>
+                                </div>
+                                
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="menuItemFeatured">
+                                    <label class="form-check-label" for="menuItemFeatured">
+                                        Featured Item (displayed on homepage)
+                                    </label>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="saveMenuItemBtn">Save Item</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reservations Tab -->
+            <div id="reservationsTab" class="tab-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Reservation Management</h2>
+                    <button class="btn btn-primary" id="addReservationBtn">
+                        <i class="fas fa-plus me-2"></i>Add New Reservation
+                    </button>
+                </div>
+                
+                <div class="panel mb-4">
+                    <div class="panel-header">
+                        <h4 class="panel-title">Filter Reservations</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="reservationDateFilter" class="form-label">Date</label>
+                                    <input type="date" class="form-control" id="reservationDateFilter">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="reservationStatusFilter" class="form-label">Status</label>
+                                    <select class="form-select" id="reservationStatusFilter">
+                                        <option value="">All Statuses</option>
+                                        <option value="confirmed">Confirmed</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="cancelled">Cancelled</option>
+                                        <option value="completed">Completed</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="reservationFloorFilter" class="form-label">Floor</label>
+                                    <select class="form-select" id="reservationFloorFilter">
+                                        <option value="">All Floors</option>
+                                        <option value="1">Floor 1</option>
+                                        <option value="2">Floor 2</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="reservationSearchInput" class="form-label">Search</label>
+                                    <input type="text" class="form-control" id="reservationSearchInput" placeholder="Search by name or phone...">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <button class="btn btn-secondary" id="resetReservationFiltersBtn">Reset</button>
+                            <button class="btn btn-primary" id="applyReservationFiltersBtn">Apply Filters</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="panel">
+                    <div class="panel-header">
+                        <h4 class="panel-title">Reservations</h4>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table admin-table" id="reservationsTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Table</th>
+                                    <th>Guests</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dynamic content will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reservation Form Modal -->
+            <div class="modal fade" id="reservationModal" tabindex="-1" aria-labelledby="reservationModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="reservationModalLabel">Add New Reservation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="reservationForm">
+                                <input type="hidden" id="reservationId">
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="reservationDate" class="form-label">Date</label>
+                                        <input type="date" class="form-control" id="reservationDate" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="reservationStartTime" class="form-label">Start Time</label>
+                                        <input type="time" class="form-control" id="reservationStartTime" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="reservationEndTime" class="form-label">End Time</label>
+                                        <input type="time" class="form-control" id="reservationEndTime" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="reservationName" class="form-label">Customer Name</label>
+                                        <input type="text" class="form-control" id="reservationName" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="reservationGuests" class="form-label">Number of Guests</label>
+                                        <input type="number" class="form-control" id="reservationGuests" min="1" max="20" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="reservationStatus" class="form-label">Status</label>
+                                        <select class="form-select" id="reservationStatus" required>
+                                            <option value="confirmed">Confirmed</option>
+                                            <option value="pending">Pending</option>
+                                            <option value="cancelled">Cancelled</option>
+                                            <option value="completed">Completed</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="reservationEmail" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="reservationEmail" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="reservationPhone" class="form-label">Phone</label>
+                                        <input type="tel" class="form-control" id="reservationPhone" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="reservationFloor" class="form-label">Floor</label>
+                                        <select class="form-select" id="reservationFloor" required>
+                                            <option value="">Select Floor</option>
+                                            <option value="1">Floor 1</option>
+                                            <option value="2">Floor 2</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="reservationTable" class="form-label">Table</label>
+                                        <select class="form-select" id="reservationTable" required>
+                                            <option value="">Select Table</option>
+                                            <!-- Will be populated dynamically based on floor selection -->
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="reservationSpecialRequests" class="form-label">Special Requests</label>
+                                    <textarea class="form-control" id="reservationSpecialRequests" rows="2"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="saveReservationBtn">Save Reservation</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tables Tab -->
+            <div id="tablesTab" class="tab-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Tables Management</h2>
+                    <button class="btn btn-primary" id="addTableBtn">
+                        <i class="fas fa-plus me-2"></i>Add New Table
+                    </button>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h4 class="panel-title">Floor 1 Layout</h4>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-dark" id="refreshFloor1Btn">
+                                        <i class="fas fa-sync-alt me-1"></i>Refresh
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="floor-layout" id="floor1Layout">
+                                    <div class="table-grid">
+                                        <!-- Dynamic content for Floor 1 will be loaded here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h4 class="panel-title">Floor 2 Layout</h4>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-dark" id="refreshFloor2Btn">
+                                        <i class="fas fa-sync-alt me-1"></i>Refresh
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="floor-layout" id="floor2Layout">
+                                    <div class="table-grid">
+                                        <!-- Dynamic content for Floor 2 will be loaded here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="panel">
+                    <div class="panel-header">
+                        <h4 class="panel-title">All Tables</h4>
+                        <div>
+                            <select id="tableFloorFilter" class="form-select form-select-sm">
+                                <option value="">All Floors</option>
+                                <option value="1">Floor 1</option>
+                                <option value="2">Floor 2</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table admin-table" id="tablesTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Table Number</th>
+                                    <th>Floor</th>
+                                    <th>Capacity</th>
+                                    <th>Status</th>
+                                    <th>Current Reservation</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dynamic content will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Table Form Modal -->
+            <div class="modal fade" id="tableModal" tabindex="-1" aria-labelledby="tableModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="tableModalLabel">Add New Table</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="tableForm">
+                                <input type="hidden" id="tableId">
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="tableNumber" class="form-label">Table Number</label>
+                                        <input type="number" class="form-control" id="tableNumber" min="1" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="tableFloor" class="form-label">Floor</label>
+                                        <select class="form-select" id="tableFloor" required>
+                                            <option value="">Select Floor</option>
+                                            <option value="1">Floor 1</option>
+                                            <option value="2">Floor 2</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="tableCapacity" class="form-label">Capacity (seats)</label>
+                                        <input type="number" class="form-control" id="tableCapacity" min="1" max="20" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="tableStatus" class="form-label">Status</label>
+                                        <select class="form-select" id="tableStatus" required>
+                                            <option value="available">Available</option>
+                                            <option value="occupied">Occupied</option>
+                                            <option value="reserved">Reserved</option>
+                                            <option value="maintenance">Under Maintenance</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="tableLocation" class="form-label">Location Description</label>
+                                    <input type="text" class="form-control" id="tableLocation" placeholder="e.g., Near window, Corner table">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="tableNotes" class="form-label">Additional Notes</label>
+                                    <textarea class="form-control" id="tableNotes" rows="2"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="saveTableBtn">Save Table</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Users Tab -->
+<div id="usersTab" class="tab-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>User Management</h2>
+        <div class="d-flex">
+            <input type="text" id="userSearchInput" class="form-control form-control-sm me-2" placeholder="Search users...">
+            <select id="userRoleFilter" class="form-select form-select-sm">
+                <option value="">All Roles</option>
+                <option value="customer">Customer</option>
+                <option value="staff">Staff</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="panel">
+        <div class="panel-header">
+            <h4 class="panel-title">Registered Users</h4>
+            <div>
+                <button class="btn btn-sm btn-outline-secondary" id="refreshUsersBtn">
+                    <i class="fas fa-sync-alt me-1"></i>Refresh
+                </button>
+            </div>
+        </div>
+        <div class="panel-body">
+            <table class="table admin-table" id="usersTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamic content will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- User Details Modal -->
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userModalLabel">User Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <input type="hidden" id="userId">
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="userFirstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="userFirstName" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="userLastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="userLastName" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="userEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="userEmail" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="userPhone" class="form-label">Phone</label>
+                        <input type="tel" class="form-control" id="userPhone" required>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="userRole" class="form-label">Role</label>
+                            <select class="form-select" id="userRole" required>
+                                <option value="customer">Customer</option>
+                                <option value="staff">Staff</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="userStatus" class="form-label">Status</label>
+                            <select class="form-select" id="userStatus" required>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="suspended">Suspended</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="userCreatedAt" class="form-label">Registered On</label>
+                        <input type="text" class="form-control" id="userCreatedAt" readonly>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="userLastLogin" class="form-label">Last Login</label>
+                        <input type="text" class="form-control" id="userLastLogin" readonly>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveUserBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Main initialization when DOM is loaded
+        // This will be replaced by the admin.js content
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize all components
+        initMenuItems();
+        loadDashboardStats();
+        loadRecentReservations();
+        loadRecentOrders();
+        loadOrdersTab();
+        setupUserManagement();
+        // Setup sidebar navigation
+        setupSidebarNavigation();
+        
+        // Setup event listeners
+        setupEventListeners();
+
+        document.querySelector('a[data-tab="users"]').addEventListener('click', function() {
+            loadUsers();
+        });
+
+    });
+
+     // User Management Functions
+     function setupUserManagement() {
+        // Refresh users button
+        document.getElementById('refreshUsersBtn').addEventListener('click', loadUsers);
+        
+        // User search input handler
+        document.getElementById('userSearchInput').addEventListener('input', loadUsers);
+        
+        // User role filter handler
+        document.getElementById('userRoleFilter').addEventListener('change', loadUsers);
+        
+        // Save user button click handler
+        document.getElementById('saveUserBtn').addEventListener('click', function() {
+            const form = document.getElementById('userForm');
+            
+            // Check if form is valid
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            // Get form values
+            const id = document.getElementById('userId').value;
+            const user = {
+                id: id,
+                firstName: document.getElementById('userFirstName').value,
+                lastName: document.getElementById('userLastName').value,
+                email: document.getElementById('userEmail').value,
+                phone: document.getElementById('userPhone').value,
+                role: document.getElementById('userRole').value,
+                status: document.getElementById('userStatus').value,
+                // Preserve existing timestamps
+                createdAt: document.getElementById('userCreatedAt').value,
+                lastLogin: document.getElementById('userLastLogin').value
+            };
+            
+            // Get existing users
+            let users = [];
+            try {
+                const storedUsers = localStorage.getItem('users');
+                if (storedUsers) {
+                    users = JSON.parse(storedUsers);
+                }
+            } catch (error) {
+                console.error('Error getting users:', error);
+            }
+            
+            // Update the user
+            const userIndex = users.findIndex(u => u.id === id);
+            if (userIndex !== -1) {
+                users[userIndex] = user;
+                
+                // Save to localStorage
+                try {
+                    localStorage.setItem('users', JSON.stringify(users));
+                    
+                    // Close modal
+                    const userModal = bootstrap.Modal.getInstance(document.getElementById('userModal'));
+                    userModal.hide();
+                    
+                    // Reload users
+                    loadUsers();
+                    
+                    // Show success message
+                    alert('User updated successfully!');
+                } catch (error) {
+                    console.error('Error saving user:', error);
+                    alert('Error saving user. Please try again.');
+                }
+            }
+        });
+    }
+
+    function loadUsers() {
+        const tableBody = document.getElementById('usersTable').querySelector('tbody');
+        tableBody.innerHTML = '';
+        
+        // Get users from localStorage
+        try {
+            const storedUsers = localStorage.getItem('users');
+            let users = [];
+            
+            if (storedUsers) {
+                users = JSON.parse(storedUsers);
+            }
+            
+            // Apply filters
+            const searchQuery = document.getElementById('userSearchInput').value.toLowerCase();
+            const roleFilter = document.getElementById('userRoleFilter').value;
+            
+            let filteredUsers = users;
+            
+            if (searchQuery) {
+                filteredUsers = filteredUsers.filter(user => 
+                    user.firstName.toLowerCase().includes(searchQuery) || 
+                    user.lastName.toLowerCase().includes(searchQuery) ||
+                    user.email.toLowerCase().includes(searchQuery) ||
+                    user.phone.toLowerCase().includes(searchQuery)
+                );
+            }
+            
+            if (roleFilter) {
+                filteredUsers = filteredUsers.filter(user => user.role === roleFilter);
+            }
+            
+            // Sort by last name
+            filteredUsers.sort((a, b) => a.lastName.localeCompare(b.lastName));
+            
+            // Check if we have any users
+            if (filteredUsers.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="7" class="text-center">No users found</td></tr>';
+                return;
+            }
+            
+            // Add users to table
+            filteredUsers.forEach(user => {
+                const row = document.createElement('tr');
+                
+                // Create status badge
+                let statusBadgeClass = 'bg-success';
+                if (user.status === 'inactive') statusBadgeClass = 'bg-secondary';
+                if (user.status === 'suspended') statusBadgeClass = 'bg-danger';
+                
+                // Create role badge
+                let roleBadgeClass = 'bg-primary';
+                if (user.role === 'staff') roleBadgeClass = 'bg-info text-dark';
+                if (user.role === 'admin') roleBadgeClass = 'bg-warning text-dark';
+                
+                row.innerHTML = `
+                    <td>${user.id.substring(0, 8)}</td>
+                    <td>${user.firstName} ${user.lastName}</td>
+                    <td>${user.email}</td>
+                    <td>${user.phone}</td>
+                    <td><span class="badge ${roleBadgeClass}">${user.role}</span></td>
+                    <td><span class="badge ${statusBadgeClass}">${user.status}</span></td>
+                    <td>
+                        <div class="table-actions">
+                            <a href="#" class="action-btn view-btn view-user" data-user-id="${user.id}" title="View">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="#" class="action-btn edit-btn edit-user" data-user-id="${user.id}" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </div>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners to action buttons
+            document.querySelectorAll('.view-user').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    viewUser(this.getAttribute('data-user-id'));
+                });
+            });
+            
+            document.querySelectorAll('.edit-user').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    editUser(this.getAttribute('data-user-id'));
+                });
+            });
+        } catch (error) {
+            console.error('Error loading users:', error);
+            tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Error loading users</td></tr>';
+        }
+    }
+
+    function viewUser(userId) {
+        try {
+            const storedUsers = localStorage.getItem('users');
+            if (storedUsers) {
+                const users = JSON.parse(storedUsers);
+                const user = users.find(u => u.id === userId);
+                
+                if (user) {
+                    // Populate form with user data
+                    document.getElementById('userId').value = user.id;
+                    document.getElementById('userFirstName').value = user.firstName;
+                    document.getElementById('userLastName').value = user.lastName;
+                    document.getElementById('userEmail').value = user.email;
+                    document.getElementById('userPhone').value = user.phone;
+                    document.getElementById('userRole').value = user.role;
+                    document.getElementById('userStatus').value = user.status;
+                    document.getElementById('userCreatedAt').value = user.createdAt || 'Unknown';
+                    document.getElementById('userLastLogin').value = user.lastLogin || 'Never';
+                    
+                    // Disable form fields for viewing
+                    document.getElementById('userForm').querySelectorAll('input, select').forEach(el => {
+                        el.disabled = true;
+                    });
+                    
+                    // Hide save button
+                    document.getElementById('saveUserBtn').style.display = 'none';
+                    
+                    // Update modal title
+                    document.getElementById('userModalLabel').textContent = 'View User Details';
+                    
+                    // Show modal
+                    const userModal = new bootstrap.Modal(document.getElementById('userModal'));
+                    userModal.show();
+                }
+            }
+        } catch (error) {
+            console.error('Error viewing user:', error);
+            alert('Error loading user data. Please try again.');
+        }
+    }
+
+    function editUser(userId) {
+        try {
+            const storedUsers = localStorage.getItem('users');
+            if (storedUsers) {
+                const users = JSON.parse(storedUsers);
+                const user = users.find(u => u.id === userId);
+                
+                if (user) {
+                    // Populate form with user data
+                    document.getElementById('userId').value = user.id;
+                    document.getElementById('userFirstName').value = user.firstName;
+                    document.getElementById('userLastName').value = user.lastName;
+                    document.getElementById('userEmail').value = user.email;
+                    document.getElementById('userPhone').value = user.phone;
+                    document.getElementById('userRole').value = user.role;
+                    document.getElementById('userStatus').value = user.status;
+                    document.getElementById('userCreatedAt').value = user.createdAt || 'Unknown';
+                    document.getElementById('userLastLogin').value = user.lastLogin || 'Never';
+                    
+                    // Enable form fields for editing
+                    document.getElementById('userForm').querySelectorAll('input, select').forEach(el => {
+                        el.disabled = false;
+                    });
+                    
+                    // Make email and timestamps readonly
+                    document.getElementById('userEmail').readOnly = true;
+                    document.getElementById('userCreatedAt').readOnly = true;
+                    document.getElementById('userLastLogin').readOnly = true;
+                    
+                    // Show save button
+                    document.getElementById('saveUserBtn').style.display = 'block';
+                    
+                    // Update modal title
+                    document.getElementById('userModalLabel').textContent = 'Edit User Details';
+                    
+                    // Show modal
+                    const userModal = new bootstrap.Modal(document.getElementById('userModal'));
+                    userModal.show();
+                }
+            }
+        } catch (error) {
+            console.error('Error editing user:', error);
+            alert('Error loading user data. Please try again.');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    // Toggle sidebar
+    const toggleSidebar = document.getElementById('toggleSidebar');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    
+    toggleSidebar.addEventListener('click', function() {
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('expanded');
+    });
+    
+    // Tab navigation
+    const navLinks = document.querySelectorAll('.nav-link[data-tab]');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all links and tabs
+            navLinks.forEach(navLink => navLink.classList.remove('active'));
+            tabContents.forEach(tabContent => tabContent.classList.remove('active'));
+            
+            // Add active class to clicked link
+            this.classList.add('active');
+            
+            // Show corresponding tab
+            const tabId = this.getAttribute('data-tab') + 'Tab';
+            const tab = document.getElementById(tabId);
+            if (tab) tab.classList.add('active');
+            
+            // Load tab-specific data
+            if (this.getAttribute('data-tab') === 'menu') {
+                loadMenuItems();
+            } else if (this.getAttribute('data-tab') === 'reservations') {
+                loadReservations();
+            } else if (this.getAttribute('data-tab') === 'tables') {
+                loadTables();
+            } else if (this.getAttribute('data-tab') === 'dashboard') {
+                loadDashboardData();
+            }
+        });
+    });
+    
+    // Initialize dashboard data
+    loadDashboardData();
+    
+    // Setup menu management functions
+    setupMenuManagement();
+    
+    // Setup reservation management functions
+    setupReservationManagement();
+    
+    // Setup table management functions
+    setupTableManagement();
+});
+
+function loadDashboardData() {
+    // Load and display stats on the dashboard
+    loadStats();
+    
+    // Load recent reservations and orders
+    loadRecentReservations();
+    loadRecentOrders();
+}
+
+function loadStats() {
+    // Get reservation count
+    try {
+        const storedReservations = localStorage.getItem('reservations');
+        if (storedReservations) {
+            const reservations = JSON.parse(storedReservations);
+            
+            // Count today's reservations
+            const today = new Date().toISOString().split('T')[0];
+            const todayReservations = reservations.filter(res => res.date === today);
+            
+            document.getElementById('reservationsToday').textContent = todayReservations.length;
+        }
+    } catch (error) {
+        console.error('Error loading reservation stats:', error);
+    }
+    
+    // Get menu items count
+    try {
+        const storedMenuItems = localStorage.getItem('menuItems');
+        if (storedMenuItems) {
+            const menuItems = JSON.parse(storedMenuItems);
+            document.getElementById('menuItemsCount').textContent = menuItems.length;
+        }
+    } catch (error) {
+        console.error('Error loading menu items stats:', error);
+    }
+    
+    // Placeholder for orders count and available tables
+    document.getElementById('ordersToday').textContent = '0';
+    document.getElementById('availableTables').textContent = '10';
+}
+
+function loadRecentReservations() {
+    const tableBody = document.getElementById('dashboardReservationsTable').querySelector('tbody');
+    tableBody.innerHTML = '';
+    
+    try {
+        const storedReservations = localStorage.getItem('reservations');
+        if (storedReservations) {
+            const reservations = JSON.parse(storedReservations);
+            
+            // Sort by date (newest first) and take the first 5
+            const recentReservations = reservations
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5);
+            
+            if (recentReservations.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="4" class="text-center">No reservations found</td></tr>';
+                return;
+            }
+            
+            recentReservations.forEach(reservation => {
+                const row = document.createElement('tr');
+                
+                // Create status badge based on status
+                let statusBadgeClass = 'bg-secondary';
+                if (reservation.status === 'confirmed') statusBadgeClass = 'bg-success';
+                if (reservation.status === 'pending') statusBadgeClass = 'bg-warning text-dark';
+                if (reservation.status === 'cancelled') statusBadgeClass = 'bg-danger';
+                
+                row.innerHTML = `
+                    <td>${reservation.name}</td>
+                    <td>${reservation.table}</td>
+                    <td>${reservation.date}</td>
+                    <td><span class="badge ${statusBadgeClass}">${reservation.status}</span></td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        } else {
+            tableBody.innerHTML = '<tr><td colspan="4" class="text-center">No reservations found</td></tr>';
+        }
+    } catch (error) {
+        console.error('Error loading recent reservations:', error);
+        tableBody.innerHTML = '<tr><td colspan="4" class="text-center">Error loading reservations</td></tr>';
+    }
+}
+
+function loadRecentOrders() {
+    const tableBody = document.getElementById('dashboardOrdersTable').querySelector('tbody');
+    tableBody.innerHTML = '<tr><td colspan="4" class="text-center">No recent orders</td></tr>';
+    
+    // This will be implemented when order data is available
+}
+
+// Menu Management Functions
+function setupMenuManagement() {
+    // Add menu item button click handler
+    document.getElementById('addMenuItemBtn').addEventListener('click', function() {
+        // Reset form
+        document.getElementById('menuItemForm').reset();
+        document.getElementById('menuItemId').value = '';
+        document.getElementById('menuItemModalLabel').textContent = 'Add New Menu Item';
+        
+        // Show modal
+        const menuItemModal = new bootstrap.Modal(document.getElementById('menuItemModal'));
+        menuItemModal.show();
+    });
+    
+    // Save menu item button click handler
+    document.getElementById('saveMenuItemBtn').addEventListener('click', function() {
+        const form = document.getElementById('menuItemForm');
+        
+        // Check if form is valid
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+        
+        // Get form values
+        const id = document.getElementById('menuItemId').value || Date.now().toString();
+        const menuItem = {
+            id: id,
+            name: document.getElementById('menuItemName').value,
+            category: document.getElementById('menuItemCategory').value,
+            price: parseInt(document.getElementById('menuItemPrice').value),
+            description: document.getElementById('menuItemDescription').value,
+            image: document.getElementById('menuItemImage').value,
+            featured: document.getElementById('menuItemFeatured').checked
+        };
+        
+        // Get existing menu items
+        let menuItems = [];
+        try {
+            const storedMenuItems = localStorage.getItem('menuItems');
+            if (storedMenuItems) {
+                menuItems = JSON.parse(storedMenuItems);
+            }
+        } catch (error) {
+            console.error('Error getting menu items:', error);
+        }
+        
+        // Check if we're updating an existing item or adding a new one
+        const existingItemIndex = menuItems.findIndex(item => item.id === id);
+        
+        if (existingItemIndex !== -1) {
+            // Update existing item
+            menuItems[existingItemIndex] = menuItem;
+        } else {
+            // Add new item
+            menuItems.push(menuItem);
+        }
+        
+        // Save to localStorage
+        try {
+            localStorage.setItem('menuItems', JSON.stringify(menuItems));
+            
+            // Close modal
+            const menuItemModal = bootstrap.Modal.getInstance(document.getElementById('menuItemModal'));
+            menuItemModal.hide();
+            
+            // Reload menu items
+            loadMenuItems();
+            
+            // Update dashboard stats
+            loadStats();
+            
+            // Show success message
+            alert('Menu item saved successfully!');
+        } catch (error) {
+            console.error('Error saving menu item:', error);
+            alert('Error saving menu item. Please try again.');
+        }
+    });
+    
+    // Menu search input handler
+    document.getElementById('menuSearchInput').addEventListener('input', function() {
+        loadMenuItems();
+    });
+    
+    // Menu category filter handler
+    document.getElementById('menuCategoryFilter').addEventListener('change', function() {
+        loadMenuItems();
+    });
+}
+
+function loadMenuItems() {
+    const tableBody = document.getElementById('menuItemsTable').querySelector('tbody');
+    tableBody.innerHTML = '';
+    
+    // Get menu items from localStorage
+    try {
+        const storedMenuItems = localStorage.getItem('menuItems');
+        let menuItems = [];
+        
+        if (storedMenuItems) {
+            menuItems = JSON.parse(storedMenuItems);
+        }
+        
+        // Apply filters
+        const searchQuery = document.getElementById('menuSearchInput').value.toLowerCase();
+        const categoryFilter = document.getElementById('menuCategoryFilter').value;
+        
+        let filteredItems = menuItems;
+        
+        if (searchQuery) {
+            filteredItems = filteredItems.filter(item => 
+                item.name.toLowerCase().includes(searchQuery) || 
+                item.description.toLowerCase().includes(searchQuery)
+            );
+        }
+        
+        if (categoryFilter) {
+            filteredItems = filteredItems.filter(item => item.category === categoryFilter);
+        }
+        
+        // Check if we have any items
+        if (filteredItems.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="7" class="text-center">No menu items found</td></tr>';
+            return;
+        }
+        
+        // Add items to table
+        filteredItems.forEach(item => {
+            const row = document.createElement('tr');
+            
+            row.innerHTML = `
+                <td>${item.id.substring(0, 8)}</td>
+                <td><img src="${item.image}" alt="${item.name}" width="50" height="50" class="rounded"></td>
+                <td>${item.name}</td>
+                <td>${item.category.charAt(0).toUpperCase() + item.category.slice(1)}</td>
+                <td>Rs. ${item.price}</td>
+                <td>${item.featured ? '<span class="badge bg-success">Yes</span>' : '<span class="badge bg-secondary">No</span>'}</td>
+                <td>
+                    <div class="table-actions">
+                        <a href="#" class="action-btn edit-btn edit-menu-item" data-item-id="${item.id}" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="#" class="action-btn delete-btn delete-menu-item" data-item-id="${item.id}" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+
+        
+        
+        // Add event listeners to edit and delete buttons
+        document.querySelectorAll('.edit-menu-item').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                editMenuItem(this.getAttribute('data-item-id'));
+            });
+        });
+        
+        document.querySelectorAll('.delete-menu-item').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                deleteMenuItem(this.getAttribute('data-item-id'));
+            });
+        });
+    } catch (error) {
+        console.error('Error loading menu items:', error);
+        tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Error loading menu items</td></tr>';
+    }
+}
+
+function editMenuItem(itemId) {
+    try {
+        const storedMenuItems = localStorage.getItem('menuItems');
+        if (storedMenuItems) {
+            const menuItems = JSON.parse(storedMenuItems);
+            const item = menuItems.find(item => item.id === itemId);
+            
+            if (item) {
+                // Populate form with item data
+                document.getElementById('menuItemId').value = item.id;
+                document.getElementById('menuItemName').value = item.name;
+                document.getElementById('menuItemCategory').value = item.category;
+                document.getElementById('menuItemPrice').value = item.price;
+                document.getElementById('menuItemDescription').value = item.description;
+                document.getElementById('menuItemImage').value = item.image;
+                document.getElementById('menuItemFeatured').checked = item.featured;
+                
+                // Update modal title
+                document.getElementById('menuItemModalLabel').textContent = 'Edit Menu Item';
+                
+                // Show modal
+                const menuItemModal = new bootstrap.Modal(document.getElementById('menuItemModal'));
+                menuItemModal.show();
+            }
+        }
+    } catch (error) {
+        console.error('Error editing menu item:', error);
+        alert('Error loading menu item data. Please try again.');
+    }
+}
+
+function deleteMenuItem(itemId) {
+    if (confirm('Are you sure you want to delete this menu item?')) {
+        try {
+            const storedMenuItems = localStorage.getItem('menuItems');
+            if (storedMenuItems) {
+                let menuItems = JSON.parse(storedMenuItems);
+                
+                // Filter out the item to delete
+                menuItems = menuItems.filter(item => item.id !== itemId);
+                
+                // Save updated menu items
+                localStorage.setItem('menuItems', JSON.stringify(menuItems));
+                
+                // Reload menu items
+                loadMenuItems();
+                
+                // Update dashboard stats
+                loadStats();
+                
+                // Show success message
+                alert('Menu item deleted successfully!');
+            }
+        } catch (error) {
+            console.error('Error deleting menu item:', error);
+            alert('Error deleting menu item. Please try again.');
+        }
+    }
+}
+
+// Reservation Management Functions
+function setupReservationManagement() {
+    // Add reservation button click handler
+    document.getElementById('addReservationBtn').addEventListener('click', function() {
+        // Reset form
+        document.getElementById('reservationForm').reset();
+        document.getElementById('reservationId').value = '';
+        document.getElementById('reservationModalLabel').textContent = 'Add New Reservation';
+        
+        // Set default date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('reservationDate').value = today;
+        
+        // Set default status to confirmed
+        document.getElementById('reservationStatus').value = 'confirmed';
+        
+        // Show modal
+        const reservationModal = new bootstrap.Modal(document.getElementById('reservationModal'));
+        reservationModal.show();
+    });
+    
+    // Floor change handler for table selection
+    document.getElementById('reservationFloor').addEventListener('change', function() {
+        const floor = this.value;
+        const tableSelect = document.getElementById('reservationTable');
+        
+        // Clear current options
+        tableSelect.innerHTML = '<option value="">Select Table</option>';
+        
+        // If no floor selected, return
+        if (!floor) return;
+        
+        // Get tables for selected floor
+        const tables = getTablesForFloor(floor);
+        
+        // Add options for each table
+        tables.forEach(table => {
+            const option = document.createElement('option');
+            option.value = table.id;
+            option.textContent = `Table ${table.number} (${table.capacity} seats)`;
+            tableSelect.appendChild(option);
+        });
+    });
+    
+    // Save reservation button click handler
+    document.getElementById('saveReservationBtn').addEventListener('click', function() {
+        const form = document.getElementById('reservationForm');
+        
+        // Check if form is valid
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+        
+        // Get form values
+        const id = document.getElementById('reservationId').value || Date.now().toString();
+        const tableId = document.getElementById('reservationTable').value;
+        const floor = document.getElementById('reservationFloor').value;
+        
+        // Get selected table details
+        const tables = getTablesForFloor(floor);
+        const selectedTable = tables.find(table => table.id === tableId) || { number: tableId };
+        
+        const reservation = {
+            id: id,
+            date: document.getElementById('reservationDate').value,
+            startTime: document.getElementById('reservationStartTime').value,
+            endTime: document.getElementById('reservationEndTime').value,
+            name: document.getElementById('reservationName').value,
+            guests: document.getElementById('reservationGuests').value,
+            email: document.getElementById('reservationEmail').value,
+            phone: document.getElementById('reservationPhone').value,
+            floor: floor,
+            tableId: tableId,
+            table: `Table ${selectedTable.number} (Floor ${floor})`,
+            specialRequests: document.getElementById('reservationSpecialRequests').value,
+            status: document.getElementById('reservationStatus').value,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+        
+        // Get existing reservations
+        let reservations = [];
+        try {
+            const storedReservations = localStorage.getItem('reservations');
+            if (storedReservations) {
+                reservations = JSON.parse(storedReservations);
+            }
+        } catch (error) {
+            console.error('Error getting reservations:', error);
+        }
+        
+        // Check if we're updating an existing reservation or adding a new one
+        const existingReservationIndex = reservations.findIndex(res => res.id === id);
+        
+        if (existingReservationIndex !== -1) {
+            // Keep created timestamp from original
+            reservation.createdAt = reservations[existingReservationIndex].createdAt;
+            
+            // Update existing reservation
+            reservations[existingReservationIndex] = reservation;
+        } else {
+            // Add new reservation
+            reservations.push(reservation);
+        }
+        
+        // Save to localStorage
+        try {
+            localStorage.setItem('reservations', JSON.stringify(reservations));
+            
+            // Close modal
+            const reservationModal = bootstrap.Modal.getInstance(document.getElementById('reservationModal'));
+            reservationModal.hide();
+            
+            // Reload reservations
+            loadReservations();
+            
+            // Update dashboard stats
+            loadStats();
+            
+            // Show success message
+            alert('Reservation saved successfully!');
+        } catch (error) {
+            console.error('Error saving reservation:', error);
+            alert('Error saving reservation. Please try again.');
+        }
+    });
+    
+    // Filter handlers
+    document.getElementById('applyReservationFiltersBtn').addEventListener('click', function() {
+        loadReservations();
+    });
+    
+    document.getElementById('resetReservationFiltersBtn').addEventListener('click', function() {
+        document.getElementById('reservationDateFilter').value = '';
+        document.getElementById('reservationStatusFilter').value = '';
+        document.getElementById('reservationFloorFilter').value = '';
+        document.getElementById('reservationSearchInput').value = '';
+        loadReservations();
+    });
+}
+
+function loadReservations() {
+    const tableBody = document.getElementById('reservationsTable').querySelector('tbody');
+    tableBody.innerHTML = '';
+    
+    // Get reservations from localStorage
+    try {
+        const storedReservations = localStorage.getItem('reservations');
+        let reservations = [];
+        
+        if (storedReservations) {
+            reservations = JSON.parse(storedReservations);
+        }
+        
+        // Apply filters
+        const dateFilter = document.getElementById('reservationDateFilter').value;
+        const statusFilter = document.getElementById('reservationStatusFilter').value;
+        const floorFilter = document.getElementById('reservationFloorFilter').value;
+        const searchQuery = document.getElementById('reservationSearchInput').value.toLowerCase();
+        
+        let filteredReservations = reservations;
+        
+        if (dateFilter) {
+            filteredReservations = filteredReservations.filter(res => res.date === dateFilter);
+        }
+        
+        if (statusFilter) {
+            filteredReservations = filteredReservations.filter(res => res.status === statusFilter);
+        }
+        
+        if (floorFilter) {
+            filteredReservations = filteredReservations.filter(res => res.floor === floorFilter);
+        }
+        
+        if (searchQuery) {
+            filteredReservations = filteredReservations.filter(res => 
+                res.name.toLowerCase().includes(searchQuery) || 
+                res.phone.toLowerCase().includes(searchQuery) ||
+                res.email.toLowerCase().includes(searchQuery)
+            );
+        }
+        
+        // Sort by date (newest first)
+        filteredReservations.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        // Check if we have any reservations
+        if (filteredReservations.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="8" class="text-center">No reservations found</td></tr>';
+            return;
+        }
+        
+        // Add reservations to table
+        filteredReservations.forEach((reservation, index) => {
+            const row = document.createElement('tr');
+            
+            // Create status badge based on status
+            let statusBadgeClass = 'bg-secondary';
+            if (reservation.status === 'confirmed') statusBadgeClass = 'bg-success';
+            if (reservation.status === 'pending') statusBadgeClass = 'bg-warning text-dark';
+            if (reservation.status === 'cancelled') statusBadgeClass = 'bg-danger';
+            
+            row.innerHTML = `
+                <td>${reservation.id.substring(0, 8)}</td>
+                <td>${reservation.name}</td>
+                <td>${reservation.date}</td>
+                <td>${reservation.startTime} - ${reservation.endTime}</td>
+                <td>${reservation.table}</td>
+                <td>${reservation.guests}</td>
+                <td><span class="badge ${statusBadgeClass}">${reservation.status}</span></td>
+                <td>
+                    <div class="table-actions">
+                        <a href="#" class="action-btn view-btn view-reservation" data-reservation-id="${reservation.id}" title="View">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="#" class="action-btn edit-btn edit-reservation" data-reservation-id="${reservation.id}" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="#" class="action-btn delete-btn delete-reservation" data-reservation-id="${reservation.id}" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+        
+        // Add event listeners to action buttons
+        document.querySelectorAll('.view-reservation').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                viewReservation(this.getAttribute('data-reservation-id'));
+            });
+        });
+        
+        document.querySelectorAll('.edit-reservation').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                editReservation(this.getAttribute('data-reservation-id'));
+            });
+        });
+        
+        document.querySelectorAll('.delete-reservation').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                deleteReservation(this.getAttribute('data-reservation-id'));
+            });
+        });
+    } catch (error) {
+        console.error('Error loading reservations:', error);
+        tableBody.innerHTML = '<tr><td colspan="8" class="text-center">Error loading reservations</td></tr>';
+    }
+}
+
+function viewReservation(reservationId) {
+    try {
+        const storedReservations = localStorage.getItem('reservations');
+        if (storedReservations) {
+            const reservations = JSON.parse(storedReservations);
+            const reservation = reservations.find(res => res.id === reservationId);
+            
+            if (reservation) {
+                // Format date for display
+                const dateObj = new Date(reservation.date);
+                const formattedDate = dateObj.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                // Show reservation details in alert (in a real app, this would be a modal)
+                alert(`
+                    Reservation Details
+                    -------------------
+                    Name: ${reservation.name}
+                    Date: ${formattedDate}
+                    Time: ${reservation.startTime} - ${reservation.endTime}
+                    Table: ${reservation.table}
+                    Guests: ${reservation.guests}
+                    Status: ${reservation.status}
+                    
+                    Contact Information:
+                    Email: ${reservation.email}
+                    Phone: ${reservation.phone}
+                    
+                    Special Requests: ${reservation.specialRequests || 'None'}
+                `);
+            }
+        }
+    } catch (error) {
+        console.error('Error viewing reservation:', error);
+        alert('Error loading reservation details. Please try again.');
+    }
+}
+
+function editReservation(reservationId) {
+    try {
+        const storedReservations = localStorage.getItem('reservations');
+        if (storedReservations) {
+            const reservations = JSON.parse(storedReservations);
+            const reservation = reservations.find(res => res.id === reservationId);
+            
+            if (reservation) {
+                // Populate form with reservation data
+                document.getElementById('reservationId').value = reservation.id;
+                document.getElementById('reservationDate').value = reservation.date;
+                document.getElementById('reservationStartTime').value = reservation.startTime;
+                document.getElementById('reservationEndTime').value = reservation.endTime;
+                document.getElementById('reservationName').value = reservation.name;
+                document.getElementById('reservationGuests').value = reservation.guests;
+                document.getElementById('reservationEmail').value = reservation.email;
+                document.getElementById('reservationPhone').value = reservation.phone;
+                document.getElementById('reservationStatus').value = reservation.status;
+                document.getElementById('reservationFloor').value = reservation.floor;
+                document.getElementById('reservationSpecialRequests').value = reservation.specialRequests || '';
+                
+                // Update modal title
+                document.getElementById('reservationModalLabel').textContent = 'Edit Reservation';
+                
+                // Trigger floor change to load tables
+                document.getElementById('reservationFloor').dispatchEvent(new Event('change'));
+                
+                // Select the table after tables are loaded
+                setTimeout(() => {
+                    const tableSelect = document.getElementById('reservationTable');
+                    if (tableSelect.querySelector(`option[value="${reservation.tableId}"]`)) {
+                        tableSelect.value = reservation.tableId;
+                    }
+                }, 100);
+                
+                // Show modal
+                const reservationModal = new bootstrap.Modal(document.getElementById('reservationModal'));
+                reservationModal.show();
+            }
+        }
+    } catch (error) {
+        console.error('Error editing reservation:', error);
+        alert('Error loading reservation data. Please try again.');
+    }
+}
+
+function deleteReservation(reservationId) {
+    if (confirm('Are you sure you want to delete this reservation?')) {
+        try {
+            const storedReservations = localStorage.getItem('reservations');
+            if (storedReservations) {
+                let reservations = JSON.parse(storedReservations);
+                
+                // Filter out the reservation to delete
+                reservations = reservations.filter(res => res.id !== reservationId);
+                
+                // Save updated reservations
+                localStorage.setItem('reservations', JSON.stringify(reservations));
+                
+                // Reload reservations
+                loadReservations();
+                
+                // Update dashboard stats
+                loadStats();
+                
+                // Show success message
+                alert('Reservation deleted successfully!');
+            }
+        } catch (error) {
+            console.error('Error deleting reservation:', error);
+            alert('Error deleting reservation. Please try again.');
+        }
+    }
+}
+
+// Table Management Functions
+function setupTableManagement() {
+    // Add table button click handler
+    document.getElementById('addTableBtn').addEventListener('click', function() {
+        // Reset form
+        document.getElementById('tableForm').reset();
+        document.getElementById('tableId').value = '';
+        document.getElementById('tableModalLabel').textContent = 'Add New Table';
+        
+        // Show modal
+        const tableModal = new bootstrap.Modal(document.getElementById('tableModal'));
+        tableModal.show();
+    });
+    
+    // Save table button click handler
+    document.getElementById('saveTableBtn').addEventListener('click', function() {
+        const form = document.getElementById('tableForm');
+        
+        // Check if form is valid
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+        
+        // Get form values
+        const id = document.getElementById('tableId').value || Date.now().toString();
+        const table = {
+            id: id,
+            number: document.getElementById('tableNumber').value,
+            floor: document.getElementById('tableFloor').value,
+            capacity: document.getElementById('tableCapacity').value,
+            status: document.getElementById('tableStatus').value,
+            location: document.getElementById('tableLocation').value,
+            notes: document.getElementById('tableNotes').value
+        };
+        
+        // Get existing tables
+        let tables = [];
+        try {
+            const storedTables = localStorage.getItem('tables');
+            if (storedTables) {
+                tables = JSON.parse(storedTables);
+            }
+        } catch (error) {
+            console.error('Error getting tables:', error);
+        }
+        
+        // Check if we're updating an existing table or adding a new one
+        const existingTableIndex = tables.findIndex(t => t.id === id);
+        
+        if (existingTableIndex !== -1) {
+            // Update existing table
+            tables[existingTableIndex] = table;
+        } else {
+            // Add new table
+            tables.push(table);
+        }
+        
+        // Save to localStorage
+        try {
+            localStorage.setItem('tables', JSON.stringify(tables));
+            
+            // Close modal
+            const tableModal = bootstrap.Modal.getInstance(document.getElementById('tableModal'));
+            tableModal.hide();
+            
+            // Reload tables
+            loadTables();
+            
+            // Show success message
+            alert('Table saved successfully!');
+        } catch (error) {
+            console.error('Error saving table:', error);
+            alert('Error saving table. Please try again.');
+        }
+    });
+    
+    // Table floor filter handler
+    document.getElementById('tableFloorFilter').addEventListener('change', function() {
+        loadTables();
+    });
+    
+    // Floor layout refresh button handlers
+    document.getElementById('refreshFloor1Btn').addEventListener('click', function() {
+        loadFloorLayout(1);
+    });
+    
+    document.getElementById('refreshFloor2Btn').addEventListener('click', function() {
+        loadFloorLayout(2);
+    });
+}
+
+function loadTables() {
+    const tableBody = document.getElementById('tablesTable').querySelector('tbody');
+    tableBody.innerHTML = '';
+    
+    // Load floor layouts
+    loadFloorLayout(1);
+    loadFloorLayout(2);
+    
+    // Get tables from localStorage
+    try {
+        const storedTables = localStorage.getItem('tables');
+        let tables = [];
+        
+        if (storedTables) {
+            tables = JSON.parse(storedTables);
+        } else {
+            // Initialize with default tables if none exist
+            initializeDefaultTables();
+            const newStoredTables = localStorage.getItem('tables');
+            if (newStoredTables) {
+                tables = JSON.parse(newStoredTables);
+            }
+        }
+        
+        // Apply floor filter
+        const floorFilter = document.getElementById('tableFloorFilter').value;
+        
+        let filteredTables = tables;
+        
+        if (floorFilter) {
+            filteredTables = filteredTables.filter(table => table.floor === floorFilter);
+        }
+        
+        // Sort by floor and then by table number
+        filteredTables.sort((a, b) => {
+            if (a.floor !== b.floor) {
+                return a.floor - b.floor;
+            }
+            return a.number - b.number;
+        });
+        
+        // Check if we have any tables
+        if (filteredTables.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="7" class="text-center">No tables found</td></tr>';
+            return;
+        }
+        
+        // Get reservations to show current reservation for each table
+        let reservations = [];
+        try {
+            const storedReservations = localStorage.getItem('reservations');
+            if (storedReservations) {
+                reservations = JSON.parse(storedReservations);
+            }
+        } catch (error) {
+            console.error('Error loading reservations for tables:', error);
+        }
+        
+        // Today's date for finding current reservations
+        const today = new Date().toISOString().split('T')[0];
+        
+        // Add tables to table
+        filteredTables.forEach(table => {
+            const row = document.createElement('tr');
+            
+            // Find current reservation for this table
+            const currentReservation = reservations.find(res => 
+                res.tableId === table.id && 
+                res.date === today && 
+                res.status === 'confirmed'
+            );
+            
+            // Create status badge
+            let statusBadgeClass = 'bg-success';
+            if (table.status === 'occupied') statusBadgeClass = 'bg-danger';
+            if (table.status === 'reserved') statusBadgeClass = 'bg-warning text-dark';
+            if (table.status === 'maintenance') statusBadgeClass = 'bg-secondary';
+            
+            row.innerHTML = `
+                <td>${table.id.substring(0, 8)}</td>
+                <td>${table.number}</td>
+                <td>${table.floor}</td>
+                <td>${table.capacity}</td>
+                <td><span class="badge ${statusBadgeClass}">${table.status}</span></td>
+                <td>${currentReservation ? `${currentReservation.name} (${currentReservation.startTime} - ${currentReservation.endTime})` : 'None'}</td>
+                <td>
+                    <div class="table-actions">
+                        <a href="#" class="action-btn edit-btn edit-table" data-table-id="${table.id}" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="#" class="action-btn delete-btn delete-table" data-table-id="${table.id}" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+        
+        // Add event listeners to edit and delete buttons
+        document.querySelectorAll('.edit-table').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                editTable(this.getAttribute('data-table-id'));
+            });
+        });
+        
+        document.querySelectorAll('.delete-table').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                deleteTable(this.getAttribute('data-table-id'));
+            });
+        });
+    } catch (error) {
+        console.error('Error loading tables:', error);
+        tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Error loading tables</td></tr>';
+    }
+}
+
+function loadFloorLayout(floorNumber) {
+    const floorLayout = document.getElementById(`floor${floorNumber}Layout`).querySelector('.table-grid');
+    floorLayout.innerHTML = '';
+    
+    // Get tables for this floor
+    const tables = getTablesForFloor(floorNumber);
+    
+    // Create grid layout
+    const gridSize = Math.ceil(Math.sqrt(tables.length));
+    floorLayout.style.display = 'grid';
+    floorLayout.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+    floorLayout.style.gap = '10px';
+    
+    // Add tables to layout
+    tables.forEach(table => {
+        const tableElement = document.createElement('div');
+        tableElement.className = 'floor-table';
+        tableElement.style.padding = '10px';
+        tableElement.style.textAlign = 'center';
+        tableElement.style.borderRadius = '5px';
+        tableElement.style.cursor = 'pointer';
+        
+        // Set color based on status
+        if (table.status === 'available') {
+            tableElement.style.backgroundColor = '#d1e7dd';
+        } else if (table.status === 'occupied') {
+            tableElement.style.backgroundColor = '#f8d7da';
+        } else if (table.status === 'reserved') {
+            tableElement.style.backgroundColor = '#fff3cd';
+        } else {
+            tableElement.style.backgroundColor = '#e2e3e5';
+        }
+        
+        tableElement.innerHTML = `
+            <h5>Table ${table.number}</h5>
+            <p>Capacity: ${table.capacity}</p>
+            <p>Status: ${table.status}</p>
+        `;
+        
+        // Add click handler to edit the table
+        tableElement.addEventListener('click', function() {
+            editTable(table.id);
+        });
+        
+        floorLayout.appendChild(tableElement);
+    });
+    
+    // If no tables for this floor
+    if (tables.length === 0) {
+        const message = document.createElement('div');
+        message.style.gridColumn = '1 / -1';
+        message.style.textAlign = 'center';
+        message.style.padding = '20px';
+        message.innerHTML = `<p>No tables found for Floor ${floorNumber}</p>`;
+        floorLayout.appendChild(message);
+    }
+}
+
+function editTable(tableId) {
+    try {
+        const storedTables = localStorage.getItem('tables');
+        if (storedTables) {
+            const tables = JSON.parse(storedTables);
+            const table = tables.find(table => table.id === tableId);
+            
+            if (table) {
+                // Populate form with table data
+                document.getElementById('tableId').value = table.id;
+                document.getElementById('tableNumber').value = table.number;
+                document.getElementById('tableFloor').value = table.floor;
+                document.getElementById('tableCapacity').value = table.capacity;
+                document.getElementById('tableStatus').value = table.status;
+                document.getElementById('tableLocation').value = table.location || '';
+                document.getElementById('tableNotes').value = table.notes || '';
+                
+                // Update modal title
+                document.getElementById('tableModalLabel').textContent = 'Edit Table';
+                
+                // Show modal
+                const tableModal = new bootstrap.Modal(document.getElementById('tableModal'));
+                tableModal.show();
+            }
+        }
+    } catch (error) {
+        console.error('Error editing table:', error);
+        alert('Error loading table data. Please try again.');
+    }
+}
+
+function deleteTable(tableId) {
+    if (confirm('Are you sure you want to delete this table?')) {
+        try {
+            const storedTables = localStorage.getItem('tables');
+            if (storedTables) {
+                let tables = JSON.parse(storedTables);
+                
+                // Filter out the table to delete
+                tables = tables.filter(table => table.id !== tableId);
+                
+                // Save updated tables
+                localStorage.setItem('tables', JSON.stringify(tables));
+                
+                // Reload tables
+                loadTables();
+                
+                // Show success message
+                alert('Table deleted successfully!');
+            }
+        } catch (error) {
+            console.error('Error deleting table:', error);
+            alert('Error deleting table. Please try again.');
+        }
+    }
+}
+
+function getTablesForFloor(floor) {
+    let tables = [];
+    
+    try {
+        const storedTables = localStorage.getItem('tables');
+        if (storedTables) {
+            const allTables = JSON.parse(storedTables);
+            tables = allTables.filter(table => table.floor === floor);
+        }
+    } catch (error) {
+        console.error('Error getting tables for floor:', error);
+    }
+    
+    return tables;
+}
+
+function initializeDefaultTables() {
+    const defaultTables = [
+        { id: '1001', number: '1', floor: '1', capacity: '4', status: 'available', location: 'Near window' },
+        { id: '1002', number: '2', floor: '1', capacity: '2', status: 'available', location: 'Center' },
+        { id: '1003', number: '3', floor: '1', capacity: '6', status: 'available', location: 'Corner' },
+        { id: '1004', number: '4', floor: '1', capacity: '4', status: 'available', location: 'Near kitchen' },
+        { id: '1005', number: '5', floor: '1', capacity: '8', status: 'available', location: 'Large table' },
+        { id: '1006', number: '6', floor: '1', capacity: '2', status: 'maintenance', location: 'Near entrance' },
+        { id: '2001', number: '1', floor: '2', capacity: '4', status: 'available', location: 'Near window' },
+        { id: '2002', number: '2', floor: '2', capacity: '2', status: 'available', location: 'Center' },
+        { id: '2003', number: '3', floor: '2', capacity: '6', status: 'available', location: 'Corner' },
+        { id: '2004', number: '4', floor: '2', capacity: '10', status: 'available', location: 'Large group table' }
+    ];
+    
+    localStorage.setItem('tables', JSON.stringify(defaultTables));
+}
+
+        // Initialize menu items in localStorage if not present
+        function initMenuItems() {
+            if (!localStorage.getItem('menuItems')) {
+                const initialMenuItems = [
+                    {
+                        id: 1,
+                        category: 'appetizer',
+                        name: 'Classic Bruschetta',
+                        description: 'Toasted baguette slices topped with fresh tomatoes, basil, garlic, and extra virgin olive oil.',
+                        price: 350,
+                        image: 'images/classic.jpeg',
+                        featured: true
+                    },
+                    {
+                        id: 2,
+                        category: 'appetizer',
+                        name: 'Crispy Calamari',
+                        description: 'Tender calamari rings lightly coated in seasoned flour and fried to perfection. Served with garlic aioli.',
+                        price: 550,
+                        image: 'images/calamari.jpeg',
+                        featured: false
+                    },
+                    {
+                        id: 3,
+                        category: 'appetizer',
+                        name: 'Stuffed Mushrooms',
+                        description: 'Button mushrooms filled with cream cheese, herbs, and topped with breadcrumbs, baked until golden.',
+                        price: 450,
+                        image: 'images/mushrooms.jpeg',
+                        featured: true
+                    },
+                    {
+                        id: 4,
+                        category: 'main',
+                        name: 'Grilled Salmon',
+                        description: 'Fresh Atlantic salmon fillet grilled to perfection, served with lemon butter sauce and roasted vegetables.',
+                        price: 1200,
+                        image: 'images/salmon.jpeg',
+                        featured: true
+                    },
+                    {
+                        id: 5,
+                        category: 'main',
+                        name: 'Ribeye Steak',
+                        description: 'Prime cut ribeye steak grilled to your preference, accompanied by mashed potatoes and grilled asparagus.',
+                        price: 1500,
+                        image: 'images/ribeye.jpg',
+                        featured: false
+                    },
+                    {
+                        id: 6,
+                        category: 'main',
+                        name: 'Pasta Primavera',
+                        description: 'Fettuccine pasta tossed with seasonal vegetables in a light cream sauce with Parmesan cheese.',
+                        price: 850,
+                        image: 'images/pasta.jpg',
+                        featured: false
+                    },
+                    {
+                        id: 7,
+                        category: 'dessert',
+                        name: 'Chocolate Lava Cake',
+                        description: 'Warm chocolate cake with a molten center, served with vanilla ice cream and fresh berries.',
+                        price: 450,
+                        image: 'images/cake.jpg',
+                        featured: true
+                    },
+                    {
+                        id: 8,
+                        category: 'dessert',
+                        name: 'Classic Tiramisu',
+                        description: 'Layers of coffee-soaked ladyfingers and mascarpone cream, dusted with cocoa powder.',
+                        price: 400,
+                        image: 'images/tiramisu.jpeg',
+                        featured: false
+                    },
+                    {
+                        id: 9,
+                        category: 'dessert',
+                        name: 'Mango Cheesecake',
+                        description: 'Creamy cheesecake with a graham cracker crust, topped with fresh mango puree and slices.',
+                        price: 500,
+                        image: 'images/mango.jpeg',
+                        featured: true
+                    },
+                    {
+                        id: 10,
+                        category: 'beverage',
+                        name: 'Fresh Fruit Juice',
+                        description: 'Freshly squeezed juice from seasonal fruits. Ask your server for today\'s selections.',
+                        price: 250,
+                        image: 'images/juice.jpeg',
+                        featured: false
+                    },
+                    {
+                        id: 11,
+                        category: 'beverage',
+                        name: 'Coffee Selection',
+                        description: 'Choose from our premium selection of coffee - Espresso, Cappuccino, Latte, or Macchiato.',
+                        price: 300,
+                        image: 'images/coffee.jpeg',
+                        featured: false
+                    }
+                ];
+                localStorage.setItem('menuItems', JSON.stringify(initialMenuItems));
+            }
+        }
+    
+        // Setup sidebar navigation
+        function setupSidebarNavigation() {
+            document.querySelectorAll('.sidebar-menu .nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const tab = this.getAttribute('data-tab');
+    
+                    // Update active link
+                    document.querySelectorAll('.sidebar-menu .nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+    
+                    // Show the selected tab
+                    document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+                    const tabContent = document.getElementById(tab + 'Tab');
+                    if (tabContent) {
+                        tabContent.classList.add('active');
+                        
+                        // Load specific tab content if needed
+                        if (tab === 'menu') renderMenuItems();
+                        if (tab === 'reservations') loadReservations();
+                        if (tab === 'tables') loadTables();
+                        if (tab === 'orders') loadOrdersTab();
+                    }
+                });
+            });
+        }
+    
+        // Setup event listeners
+        function setupEventListeners() {
+            // Toggle sidebar
+            document.getElementById('toggleSidebar').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('collapsed');
+                document.getElementById('mainContent').classList.toggle('expanded');
+            });
+    
+            // Menu Items
+            document.getElementById('addMenuItemBtn').addEventListener('click', function() {
+                document.getElementById('menuItemForm').reset();
+                document.getElementById('menuItemId').value = '';
+                new bootstrap.Modal(document.getElementById('menuItemModal')).show();
+            });
+    
+            document.getElementById('saveMenuItemBtn').addEventListener('click', saveMenuItem);
+    
+            // Menu search and filter
+            document.getElementById('menuSearchInput').addEventListener('input', renderMenuItems);
+            document.getElementById('menuCategoryFilter').addEventListener('change', renderMenuItems);
+        }
+    
+        // Load dashboard statistics
+        function loadDashboardStats() {
+            const menuItems = JSON.parse(localStorage.getItem('menuItems')) || [];
+            const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const tables = JSON.parse(localStorage.getItem('tables')) || [];
+    
+            // Update stats
+            document.getElementById('menuItemsCount').textContent = menuItems.length;
+            document.getElementById('ordersToday').textContent = orders.filter(o => 
+                new Date(o.date).toDateString() === new Date().toDateString()
+            ).length;
+            document.getElementById('reservationsToday').textContent = reservations.filter(r => 
+                new Date(r.date).toDateString() === new Date().toDateString()
+            ).length;
+            document.getElementById('availableTables').textContent = tables.filter(t => 
+                t.status === 'available'
+            ).length;
+        }
+    
+        // Render menu items table
+        function renderMenuItems() {
+            const tbody = document.querySelector('#menuItemsTable tbody');
+            const items = JSON.parse(localStorage.getItem('menuItems')) || [];
+            const searchTerm = document.getElementById('menuSearchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('menuCategoryFilter').value;
+    
+            // Filter items
+            const filteredItems = items.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(searchTerm) || 
+                                     item.description.toLowerCase().includes(searchTerm);
+                const matchesCategory = categoryFilter ? item.category === categoryFilter : true;
+                return matchesSearch && matchesCategory;
+            });
+    
+            tbody.innerHTML = '';
+    
+            filteredItems.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.id}</td>
+                    <td><img src="${item.image}" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.src='https://via.placeholder.com/50'" /></td>
+                    <td>${item.name}</td>
+                    <td>${item.category.charAt(0).toUpperCase() + item.category.slice(1)}</td>
+                    <td>Rs. ${item.price.toFixed(2)}</td>
+                    <td>${item.featured ? 'Yes' : 'No'}</td>
+                    <td class="table-actions">
+                        <button class="action-btn edit-btn edit-menu" data-id="${item.id}"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn delete-btn delete-menu" data-id="${item.id}"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+    
+            // Set up edit buttons
+            document.querySelectorAll('.edit-menu').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    const items = JSON.parse(localStorage.getItem('menuItems')) || [];
+                    const item = items.find(i => i.id == id);
+    
+                    if (item) {
+                        document.getElementById('menuItemId').value = item.id;
+                        document.getElementById('menuItemName').value = item.name;
+                        document.getElementById('menuItemPrice').value = item.price;
+                        document.getElementById('menuItemDescription').value = item.description;
+                        document.getElementById('menuItemImage').value = item.image;
+                        document.getElementById('menuItemCategory').value = item.category;
+                        document.getElementById('menuItemFeatured').checked = item.featured;
+    
+                        new bootstrap.Modal(document.getElementById('menuItemModal')).show();
+                    }
+                });
+            });
+    
+            // Set up delete buttons
+            document.querySelectorAll('.delete-menu').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to delete this menu item?')) {
+                        const id = this.dataset.id;
+                        let items = JSON.parse(localStorage.getItem('menuItems')) || [];
+                        items = items.filter(item => item.id != id);
+                        localStorage.setItem('menuItems', JSON.stringify(items));
+                        renderMenuItems();
+                        loadDashboardStats();
+                    }
+                });
+            });
+        }
+    
+        // Save menu item
+        function saveMenuItem() {
+            const id = document.getElementById('menuItemId').value;
+            const name = document.getElementById('menuItemName').value;
+            const price = parseFloat(document.getElementById('menuItemPrice').value);
+            const description = document.getElementById('menuItemDescription').value;
+            const image = document.getElementById('menuItemImage').value;
+            const category = document.getElementById('menuItemCategory').value;
+            const featured = document.getElementById('menuItemFeatured').checked;
+    
+            if (!name || isNaN(price)) {
+                alert("Please provide valid name and price.");
+                return;
+            }
+    
+            let items = JSON.parse(localStorage.getItem('menuItems')) || [];
+            
+            if (id) {
+                // Update existing item
+                const index = items.findIndex(item => item.id == id);
+                if (index !== -1) {
+                    items[index] = { ...items[index], name, price, description, image, category, featured };
+                }
+            } else {
+                // Add new item
+                const newId = items.length > 0 ? Math.max(...items.map(item => item.id)) + 1 : 1;
+                items.push({
+                    id: newId,
+                    name,
+                    price,
+                    description,
+                    image,
+                    category,
+                    featured
+                });
+            }
+    
+            localStorage.setItem('menuItems', JSON.stringify(items));
+            renderMenuItems();
+            loadDashboardStats();
+            bootstrap.Modal.getInstance(document.getElementById('menuItemModal')).hide();
+        }
+    
+        // Load recent reservations for dashboard
+        function loadRecentReservations() {
+            const tbody = document.querySelector('#dashboardReservationsTable tbody');
+            const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
+            
+            tbody.innerHTML = '';
+            
+            reservations.slice(-5).reverse().forEach(res => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${res.name}</td>
+                    <td>${res.table}</td>
+                    <td>${new Date(res.date).toLocaleDateString()}</td>
+                    <td><span class="badge bg-${getStatusColor(res.status)}">${res.status}</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+    
+        // Load recent orders for dashboard
+        function loadRecentOrders() {
+            const tbody = document.querySelector('#dashboardOrdersTable tbody');
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            
+            tbody.innerHTML = '';
+            
+            orders.slice(-5).reverse().forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.items.length} item(s)</td>
+                    <td>Rs. ${order.total.toFixed(2)}</td>
+                    <td><span class="badge bg-${getStatusColor(order.status)}">${order.status}</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+    
+        // Load orders tab
+        function loadOrdersTab() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            let ordersTab = document.getElementById('ordersTab');
+    
+            if (!ordersTab) {
+                ordersTab = document.createElement('div');
+                ordersTab.id = 'ordersTab';
+                ordersTab.className = 'tab-content';
+                document.getElementById('mainContent').appendChild(ordersTab);
+            }
+    
+            ordersTab.innerHTML = `
+                <h2 class="mb-4">All Orders</h2>
+                <div class="panel">
+                    <div class="panel-header">
+                        <h4 class="panel-title">Orders List</h4>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Date</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${orders.reverse().map(order => `
+                                    <tr data-id="${order.id}">
+                                        <td>${order.id}</td>
+                                        <td>${new Date(order.date).toLocaleString()}</td>
+                                        <td>
+                                            ${order.items.map(i => `${i.quantity || 1} x ${i.name}`).join('<br>')}
+                                        </td>
+                                        <td>Rs. ${order.total.toFixed(2)}</td>
+                                        <td><span class="badge bg-${getStatusColor(order.status)}">${order.status}</span></td>
+                                        <td class="table-actions">
+                                            ${order.status === 'pending' ? `
+                                                <button class="btn btn-sm btn-success mark-complete" data-id="${order.id}">✓</button>
+                                                <button class="btn btn-sm btn-danger mark-cancel" data-id="${order.id}">✕</button>
+                                            ` : `<span class="text-muted">No actions</span>`}
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+    
+            // Setup order action buttons
+            document.querySelectorAll('.mark-complete').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    updateOrderStatus(btn.dataset.id, 'completed');
+                });
+            });
+    
+            document.querySelectorAll('.mark-cancel').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    updateOrderStatus(btn.dataset.id, 'cancelled');
+                });
+            });
+        }
+    
+        // Update order status
+        function updateOrderStatus(orderId, newStatus) {
+            let orders = JSON.parse(localStorage.getItem('orders')) || [];
+            orders = orders.map(order => {
+                if (order.id === orderId) {
+                    order.status = newStatus;
+                }
+                return order;
+            });
+            localStorage.setItem('orders', JSON.stringify(orders));
+            loadOrdersDashboard();
+            loadOrdersTab();
+        }
+    
+        // Helper function to get status color
+        function getStatusColor(status) {
+            switch ((status || '').toLowerCase()) {
+                case 'pending': return 'warning';
+                case 'completed': return 'success';
+                case 'confirmed': return 'primary';
+                case 'cancelled': return 'danger';
+                case 'available': return 'success';
+                case 'occupied': return 'danger';
+                case 'reserved': return 'warning';
+                default: return 'secondary';
+            }
+        }
+
+        
+    </script>    
+    <!-- Admin Dashboard Script -->
+    <script src="js/admin.js"></script>
+    
+</body>
+</html> 

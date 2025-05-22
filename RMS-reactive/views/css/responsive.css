@@ -1,0 +1,101 @@
+/* Responsive styles for RMS */
+
+/* Base responsive settings */
+* {
+    box-sizing: border-box;
+}
+
+/* Small devices (phones, 576px and down) */
+@media (max-width: 576px) {
+    .container {
+        width: 100%;
+        padding: 0 10px;
+    }
+    
+    .reservation-card {
+        padding: 15px;
+    }
+    
+    .reservation-form-col {
+        margin-top: 20px;
+    }
+    
+    .guest-indicators {
+        flex-wrap: wrap;
+    }
+    
+    .guest-indicator {
+        margin: 5px;
+    }
+    
+    .action-btn {
+        padding: 5px;
+        margin: 2px;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .card-body {
+        padding: 15px;
+    }
+    
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 577px) and (max-width: 991px) {
+    .reservation-card {
+        padding: 20px;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+    }
+}
+
+/* Cart responsive styles */
+@media (max-width: 768px) {
+    .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .cart-item-img {
+        margin-bottom: 10px;
+    }
+    
+    .cart-item-quantity {
+        margin-top: 10px;
+        margin-left: 0 !important;
+    }
+    
+    .remove-item {
+        margin-top: 10px;
+        margin-left: 0 !important;
+        align-self: flex-end;
+    }
+}
+
+/* Responsive menu items */
+@media (max-width: 768px) {
+    .menu-item {
+        flex-direction: column;
+    }
+    
+    .menu-item-img {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+}
+
+/* Responsive dashboard */
+@media (max-width: 768px) {
+    #dashboardStats .card {
+        margin-bottom: 15px;
+    }
+}

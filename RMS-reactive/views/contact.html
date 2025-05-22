@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | Skime Restaurant</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    
+    <style>
+        .contact-info i {
+            width: 30px;
+            text-align: center;
+        }
+        .btn-outline-primary, .btn-outline-success, .btn-outline-danger, .btn-outline-info {
+            text-align: left;
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+        }
+        .btn-outline-primary:hover, .btn-outline-success:hover, .btn-outline-danger:hover, .btn-outline-info:hover {
+            transform: translateX(5px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-utensils me-2"></i>Skime
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="menu.html">
+                            <i class="fas fa-book-open me-1"></i>Menu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="list.html">
+                            <i class="fas fa-list me-1"></i>Reservations & Orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="add.html">
+                            <i class="fas fa-calendar-plus me-1"></i>Book a Table
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="contact.html">
+                            <i class="fas fa-envelope me-1"></i>Contact
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-shopping-cart me-1"></i>Order Now
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">
+                            <i class="fas fa-sign-in-alt me-1"></i>Login
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contact Header -->
+    <div class="py-5 bg-light">
+        <div class="container text-center">
+            <h1 class="display-4">Contact Us</h1>
+            <p class="lead">We'd love to hear from you! Reach out with any questions about reservations or orders.</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Contact Form -->
+            <div class="col-lg-6 mb-5">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4">Send Us a Message</h3>
+                        
+                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="display: none;" id="successAlert">
+                            Your message has been sent successfully! We will get back to you soon.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        
+                        <form id="contactForm" method="post">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Your Name</label>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Shehroz Khan" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="email@example.com" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" name="phone" placeholder="(123) 456-7890">
+                            </div>
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Subject</label>
+                                <select class="form-select" id="subject" name="subject" required>
+                                    <option value="" selected disabled>Select a subject</option>
+                                    <option value="reservation">Table Reservation</option>
+                                    <option value="order">Food Order Inquiry</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="catering">Catering Services</option>
+                                    <option value="takeout">Takeout Services</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Message</label>
+                                <textarea class="form-control" id="message" name="message" rows="5" placeholder="Your message here..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information & Quick Links -->
+            <div class="col-lg-6">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4">Our Information</h3>
+                        <p><i class="fas fa-map-marker-alt me-2 text-primary"></i> 123 MM Alam Road, Gulberg III, Lahore, Pakistan</p>
+                        <p><i class="fas fa-phone me-2 text-primary"></i> (042) 3576-7890</p>
+                        <p><i class="fas fa-envelope me-2 text-primary"></i> info@Skime-restaurant.com</p>
+                        <p><i class="fas fa-clock me-2 text-primary"></i> Open Hours:</p>
+                        <ul class="list-unstyled ms-4">
+                            <li>Monday - Thursday: 11:00 AM - 10:00 PM</li>
+                            <li>Friday - Saturday: 11:00 AM - 11:00 PM</li>
+                            <li>Sunday: 12:00 PM - 9:00 PM</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Quick Access Links -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h3 class="card-title mb-3">Quick Access</h3>
+                        <div class="d-grid gap-2">
+                            <a href="menu.html" class="btn btn-outline-primary">
+                                <i class="fas fa-utensils me-2"></i>View Menu
+                            </a>
+                            <a href="add.html" class="btn btn-outline-success">
+                                <i class="fas fa-chair me-2"></i>Reserve a Table
+                            </a>
+                            <a href="#" class="btn btn-outline-danger">
+                                <i class="fas fa-shopping-bag me-2"></i>Order Online
+                            </a>
+                            <a href="list.html" class="btn btn-outline-info">
+                                <i class="fas fa-clipboard-list me-2"></i>View Reservations & Orders
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title mb-3">Find Us</h3>
+                        <div id="map" style="height: 300px; width: 100%; border-radius: 8px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Skime Restaurant</h5>
+                    <p>A comprehensive system for restaurant order and table management.</p>
+                    <div class="d-flex gap-3 mt-3">
+                        <a href="#" class="text-light"><i class="fab fa-facebook-f fa-lg"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-twitter fa-lg"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-light">Home</a></li>
+                        <li><a href="menu.html" class="text-light">Menu</a></li>
+                        <li><a href="list.html" class="text-light">View Reservations & Orders</a></li>
+                        <li><a href="add.html" class="text-light">Book a Table</a></li>
+                        <li><a href="#" class="text-light">Order Online</a></li>
+                        <li><a href="contact.html" class="text-light">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact</h5>
+                    <address>
+                        <p><i class="fas fa-map-marker-alt me-2"></i>123 MM Alam Road, Gulberg III, Lahore</p>
+                        <p><i class="fas fa-phone me-2"></i>(042) 3576-7890</p>
+                        <p><i class="fas fa-envelope me-2"></i>info@Skime-restaurant.com</p>
+                    </address>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col text-center">
+                    <p class="mb-0">© 2025 Skime Restaurant Order & Table Management System. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Leaflet Map JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- Contact Form and Map JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create map
+            const map = L.map('map').setView([31.5204, 74.3587], 13); // Lahore coordinates
+            
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            // Add marker for restaurant location
+            const marker = L.marker([31.5204, 74.3587]).addTo(map);
+            marker.bindPopup("<b>TASTE Restaurant</b><br>123 MM Alam Road, Gulberg III, Lahore").openPopup();
+            
+            // Handle form submission
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    // In a real scenario, this would send the form to the server
+                    // For demo purposes, we'll just show a success message
+                    document.getElementById('successAlert').style.display = 'block';
+                    contactForm.reset();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
